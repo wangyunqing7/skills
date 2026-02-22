@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{PAPER_TITLE}} - 论文解读</title>
+    <style>
+        /* === CSS Variables === */
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bf00ff;
+            --glass-dark: rgba(255,255,255,0.05);
+            --glass-light: rgba(0,0,0,0.03);
+            --border-dark: rgba(255,255,255,0.1);
+            --border-light: rgba(0,0,0,0.1);
+            --shadow-neon: 0 0 30px rgba(0,243,255,0.15);
+            --bg-dark: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #16213e 100%);
+            --bg-light: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            --text-dark: #e0e0e0;
+            --text-light: #333;
+        }
+
+        /* === Dark Theme (default) === */
+        [data-theme="dark"] {
+            --bg: var(--bg-dark);
+            --text: var(--text-dark);
+            --glass: var(--glass-dark);
+            --border: var(--border-dark);
+            --accent: var(--neon-blue);
+        }
+
+        /* === Light Theme === */
+        [data-theme="light"] {
+            --bg: var(--bg-light);
+            --text: var(--text-light);
+            --glass: var(--glass-light);
+            --border: var(--border-light);
+            --accent: var(--neon-purple);
+        }
+
+        /* === Base === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        /* === Progress Bar === */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            z-index: 1000; transition: width 0.1s;
+        }
+
+        /* === Canvas Background === */
+        #particles { position: fixed; top: 0; left: 0; z-index: -1; }
+
+        /* === Content Container === */
+        .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+        /* === Hero Section === */
+        .hero {
+            text-align: center; padding: 100px 20px 60px;
+        }
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 800;
+            text-shadow: 0 0 20px rgba(0,243,255,0.3);
+            margin-bottom: 20px;
+        }
+
+        /* === Section Card (Glassmorphism) === */
+        .section-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0; transform: translateY(30px);
+        }
+        .section-card.visible {
+            opacity: 1; transform: translateY(0);
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-neon);
+        }
+        .section-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--accent);
+        }
+
+        /* === Image Container === */
+        .image-container {
+            width: 100%; max-width: 900px; margin: 40px auto;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .image-container:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-neon);
+        }
+        .image-container img { width: 100%; height: auto; display: block; }
+        .image-caption {
+            padding: 15px 20px; font-size: 0.9rem; opacity: 0.8;
+            text-align: center; border-top: 1px solid var(--border);
+        }
+
+        /* === Theme Toggle === */
+        .theme-toggle {
+            position: fixed; top: 20px; right: 20px; z-index: 999;
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 50%;
+            width: 44px; height: 44px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; transition: all 0.3s;
+        }
+        .theme-toggle:hover { box-shadow: var(--shadow-neon); }
+
+        /* === TOC Navigation === */
+        .toc {
+            position: fixed; left: 20px; top: 50%; transform: translateY(-50%);
+            z-index: 998; display: none;
+        }
+        @media (min-width: 1200px) { .toc { display: block; } }
+        .toc a {
+            display: block; padding: 6px 12px; margin: 4px 0;
+            color: var(--text); opacity: 0.5; text-decoration: none;
+            font-size: 0.85rem; border-left: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        .toc a.active { opacity: 1; border-left-color: var(--accent); }
+
+        /* === Back to Top === */
+        .back-to-top {
+            position: fixed; bottom: 30px; right: 30px; z-index: 999;
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 1px solid var(--border); border-radius: 50%;
+            width: 44px; height: 44px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: all 0.3s; font-size: 1.2rem;
+        }
+        .back-to-top.visible { opacity: 1; }
+
+        /* === Responsive === */
+        @media (max-width: 768px) {
+            .section-card { padding: 24px 16px; }
+            .hero { padding: 60px 16px 40px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+    <canvas id="particles"></canvas>
+    <button class="theme-toggle" id="themeToggle">🌙</button>
+    <nav class="toc" id="toc"><!-- Auto-generated --></nav>
+
+    <section class="hero">
+        <h1>{{PAPER_TITLE}}</h1>
+        <p>{{PAPER_SUBTITLE}}</p>
+    </section>
+
+    <div class="container">
+        {{CONTENT_SECTIONS}}
+    </div>
+
+    <button class="back-to-top" id="backToTop">↑</button>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement;
+            const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('backToTop').classList.toggle('visible', h.scrollTop > 400);
+        });
+
+        // Theme toggle
+        document.getElementById('themeToggle').addEventListener('click', () => {
+            const html = document.documentElement;
+            const isDark = html.dataset.theme === 'dark';
+            html.dataset.theme = isDark ? 'light' : 'dark';
+            document.getElementById('themeToggle').textContent = isDark ? '☀️' : '🌙';
+        });
+
+        // Back to top
+        document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.section-card').forEach(el => observer.observe(el));
+
+        // Particle background
+        (() => {
+            const canvas = document.getElementById('particles');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+            resize();
+            window.addEventListener('resize', resize);
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    r: Math.random() * 2 + 0.5,
+                    dx: (Math.random() - 0.5) * 0.5,
+                    dy: (Math.random() - 0.5) * 0.5,
+                });
+            }
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0,243,255,0.3)';
+                    ctx.fill();
+                    p.x += p.dx; p.y += p.dy;
+                    if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        })();
+
+        // Lazy loading images
+        if ('loading' in HTMLImageElement.prototype) {
+            document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                img.src = img.dataset.src || img.src;
+            });
+        }
+
+        // Auto-generate TOC
+        (() => {
+            const toc = document.getElementById('toc');
+            document.querySelectorAll('.section-card h2').forEach((h, i) => {
+                h.id = 'section-' + i;
+                const a = document.createElement('a');
+                a.href = '#section-' + i;
+                a.textContent = h.textContent;
+                toc.appendChild(a);
+            });
+        })();
+    </script>
+</body>
+</html>
