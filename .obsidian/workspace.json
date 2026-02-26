@@ -201,19 +201,19 @@
   },
   "active": "76b3ef727872d02e",
   "lastOpenFiles": [
+    "youtube-downloader/scripts/translate.ts",
+    "youtube-downloader/scripts/download.ts",
+    "youtube-downloader/scripts/burn.ts",
+    "youtube-downloader/SKILL.md",
+    "youtube-downloader/scripts",
+    "youtube-downloader/references",
+    "youtube-downloader/assets",
+    "youtube-downloader",
+    "youtube-downloader.skill",
     "skills/youtube-downloader/scripts/translate.ts",
     "skills/youtube-downloader/scripts/download.ts",
     "skills/youtube-downloader/scripts/burn.ts",
-    "skills/youtube-downloader/youtube-downloader.skill",
     "skills/youtube-downloader/SKILL.md",
-    "skills/youtube-downloader/scripts",
-    "skills/youtube-downloader/references",
-    "skills/youtube-downloader/assets",
-    "skills/youtube-downloader",
-    "youtube-downloader/youtube-downloader.skill",
-    "youtube-downloader/SKILL.md",
-    "youtube-downloader/scripts/download.ts",
-    "youtube-downloader/scripts/translate.ts",
     "欢迎.md"
   ]
 }
