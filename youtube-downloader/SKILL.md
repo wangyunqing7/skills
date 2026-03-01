@@ -40,16 +40,28 @@ deno run --allow-run --allow-read --allow-write "C:/Users/Yunqing72/.claude/skil
 
 ### 4. 翻译字幕
 
-使用 AI 将英文字幕翻译为中文。执行翻译脚本：
+使用 GLM API 将英文字幕翻译为中文。执行翻译脚本：
 
 ```bash
-deno run --allow-read --allow-write "C:/Users/Yunqing72/.claude/skills/youtube-downloader/scripts/translate.ts" "<OUTPUT_DIR>/en.srt" "<OUTPUT_DIR>/zh.srt"
+deno run --allow-read --allow-write --allow-net --allow-env "C:/Users/Yunqing72/.claude/skills/youtube-downloader/scripts/translate.ts" "<OUTPUT_DIR>/en.srt" "<OUTPUT_DIR>/zh.srt"
 ```
 
-**翻译要求**：
-- 保持 SRT 格式的时间轴不变
-- 只翻译文本内容
-- 保持行数对应
+**GLM API 配置**：
+- 获取 API Key：访问 https://open.bigmodel.cn/ 注册
+- 新用户可获得免费额度（glm-4-flash 模型免费）
+- 设置环境变量：`export GLM_API_KEY=your_key`
+- 或通过命令行参数传入
+
+**API 端点说明**：
+- 通用用户：`https://open.bigmodel.cn/api/paas/v4/chat/completions`
+- **Coding 套餐用户**（专属）：`https://open.bigmodel.cn/api/coding/paas/v4/chat/completions`
+- 当前脚本已配置为 Coding 套餐端点
+
+**翻译功能**：
+- 智能断句合并：自动合并破碎的时间轴片段
+- 时间轴自适应：根据译文长度调整显示时间
+- 批量翻译：每次处理 10 条字幕，提高效率
+- 自动清理：移除 HTML 标签、音乐符号等干扰内容
 
 ### 5. 生成双语视频
 
@@ -76,7 +88,7 @@ deno run --allow-run --allow-read --allow-write "C:/Users/Yunqing72/.claude/skil
 下载视频和英文字幕到指定目录。
 
 ### scripts/translate.ts
-使用 AI 将 SRT 字幕翻译为中文。
+使用 GLM API 将 SRT 字幕翻译为中文，包含智能断句合并和时间轴自适应功能。
 
 ### scripts/burn.ts
 使用 ffmpeg 烧录双语字幕到视频。

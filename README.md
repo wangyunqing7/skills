@@ -37,13 +37,61 @@
 ### 3. youtube-downloader
 **YouTube 视频下载与双语字幕处理工具**
 
-功能包括：
-1. 检查依赖环境（yt-dlp、ffmpeg、deno）
-2. 下载最高品质视频
-3. 下载英文字幕
-4. AI 翻译英文字幕为中文
-5. 烧录双语字幕生成 MP4
-6. 输出完整视频文件夹（无字幕视频、英文字幕、中文字幕、双语视频）
+一键下载 YouTube 视频，自动生成高质量双语字幕。
+
+**核心功能：**
+- 🎬 下载最高品质视频（yt-dlp）
+- 📥 自动获取英文字幕
+- 🤖 AI 智能翻译（支持 GLM API）
+- 🔀 智能断句合并（避免一句话被分割）
+- ⏱️ 时间轴自适应（根据译文长度调整）
+- 🎨 双语字幕烧录（英上中下）
+
+**AI 翻译特性：**
+- 批量翻译处理，提高效率
+- 自动清理 HTML 标签和音乐符号
+- 支持多种 GLM 模型（glm-4-flash、glm-4-air、glm-4.7 等）
+- 通用端点和 Coding 套餐端点自动适配
+
+**输出文件：**
+| 文件 | 说明 |
+|------|------|
+| `video.mp4` | 最高品质无字幕视频 |
+| `en.srt` | 英文字幕 |
+| `zh.srt` | AI 翻译的中文字幕 |
+| `bilingual.mp4` | 带双语字幕的最终视频 |
+
+**环境要求：**
+```bash
+# 必需依赖
+yt-dlp_x86.exe  # 视频下载
+ffmpeg          # 视频处理
+deno            # TypeScript 运行时
+```
+
+**API 配置：**
+需要 GLM API Key，访问 [智谱AI开放平台](https://open.bigmodel.cn/) 获取。
+
+设置环境变量：
+```bash
+# PowerShell
+$env:GLM_API_KEY = "your_api_key_here"
+
+# CMD
+set GLM_API_KEY=your_api_key_here
+```
+
+**工作流程：**
+```bash
+# 1. 下载视频和英文字幕
+deno run --allow-run --allow-read --allow-write scripts/download.ts "<YOUTUBE_URL>" "<OUTPUT_DIR>"
+
+# 2. AI 翻译字幕
+deno run --allow-read --allow-write --allow-net --allow-env scripts/translate.ts "<OUTPUT_DIR>/en.srt" "<OUTPUT_DIR>/zh.srt"
+
+# 3. 烧录双语字幕
+deno run --allow-run --allow-read --allow-write scripts/burn.ts "<OUTPUT_DIR>"
+```
 
 ---
 
