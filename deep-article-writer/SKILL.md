@@ -112,3 +112,53 @@ categories:
 6. **参考资料** - 列出引用的权威资料来源，格式为 `[标题](URL)`
 
 最重要的是：**让读者感觉"我终于懂了"，而不是"我上了一节课"**。
+
+## 多媒体内容嵌入
+
+### B站视频嵌入
+
+当文章需要嵌入B站视频时，使用以下方法：
+
+#### 获取视频参数
+
+从用户提供的B站视频链接中解析参数：
+- 完整链接：`https://www.bilibili.com/video/BV1xxxxxxx`
+- 短链接：`https://b23.tv/xxxxx`
+
+#### 嵌入代码模板
+
+```html
+<div class="video-container">
+<iframe
+    src="//player.bilibili.com/player.html?isOutside=true&aid={aid}&bvid={bvid}&cid={cid}&p=1&autoplay=0&danmaku=0"
+    width="100%"
+    height="500"
+    scrolling="no"
+    frameborder="0"
+    sandbox="allow-forms allow-same-origin allow-scripts allow-presentation"
+    allowfullscreen>
+</iframe>
+</div>
+```
+
+#### 参数说明
+
+| 参数 | 作用 |
+|------|------|
+| `autoplay=0` | 关闭自动播放 |
+| `danmaku=0` | 默认关闭弹幕 |
+| `sandbox` | 防止跳转到B站（关键！） |
+| `width="100%"` | 响应式宽度 |
+
+#### 自动获取视频信息
+
+当用户提供B站链接时：
+1. 使用浏览器工具或网络工具获取视频页面
+2. 解析出 `aid`、`bvid`、`cid` 参数
+3. 生成完整的嵌入代码并插入到文章中
+
+#### 注意事项
+
+- 视频嵌入代码应放在相关的章节内容之后
+- 为视频添加简短的描述或说明文字
+- 确保视频与文章内容高度相关
