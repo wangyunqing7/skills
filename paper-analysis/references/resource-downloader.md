@@ -6,13 +6,14 @@
 
 ### By Platform
 
-| Platform | Strategy |
-|----------|----------|
-| arXiv | Replace `abs` → `pdf` in URL, append `.pdf` |
-| OpenReview | Find "Download PDF" link on page |
-| PubMed | Locate full-text PDF link |
-| IEEE | Find PDF download button |
-| Other | Search page for PDF link |
+| Platform | Detection Pattern | Strategy |
+|----------|-------------------|----------|
+| arXiv | `arxiv.org` in URL | Replace `abs` → `pdf` in URL, append `.pdf` |
+| OpenReview | `openreview.net` in URL | Find "Download PDF" link on page |
+| PubMed | `pubmed.ncbi.nlm.nih.gov` in URL | Locate full-text PDF link |
+| Direct PDF | URL ends with `.pdf` or contains `/pdf/` | Direct download |
+| Local File | File exists on filesystem | Copy to workspace |
+| Other | Any other HTTP/HTTPS URL | Search page for PDF link |
 
 ### arXiv Example
 
@@ -24,7 +25,14 @@ curl -L "https://arxiv.org/pdf/1706.03762.pdf" -o {workspace}/pdfs/paper_1706.03
 
 ### File Naming
 
-Save to `{workspace}/pdfs/paper_{arxiv_id_or_date}.pdf`
+Save to `{workspace}/pdfs/paper_{platform}_{id}.pdf`
+
+Where `{platform}` is: `arxiv` (uses arXiv ID), `pdf` (timestamp), `local` (filename), `paper` (timestamp).
+
+Examples:
+- arXiv: `paper_1706.03762.pdf`
+- Direct PDF: `paper_pdf_1234567890.pdf`
+- Local: `paper_my_research_paper.pdf`
 
 ## Related Article Collection
 
@@ -43,7 +51,28 @@ After PDF download:
 
 - `web.fetch` or `curl`/`wget` for downloads
 - `mkdir -p {workspace}/pdfs/ {workspace}/articles/` if dirs don't exist
-- Use the helper script `scripts/download_paper.sh` for arXiv papers
+- Use the helper script `scripts/download_paper.sh` for all paper types
+
+### Using download_paper.sh
+
+```bash
+# arXiv paper (backward compatible)
+bash scripts/download_paper.sh "https://arxiv.org/abs/1706.03762" "{workspace}"
+
+# Direct PDF URL
+bash scripts/download_paper.sh "https://example.com/paper.pdf" "{workspace}"
+
+# Local PDF file
+bash scripts/download_paper.sh "/path/to/local.pdf" "{workspace}"
+
+# Optional: provide paper title for better filename
+bash scripts/download_paper.sh "https://example.com/paper.pdf" "{workspace}" "My Paper Title"
+```
+
+The script outputs:
+- `PAPER_ID`: Unique identifier for the paper
+- `OUTPUT_FILE`: Full path to downloaded/copied PDF
+- `INPUT_TYPE`: Detected input type (arxiv, direct_pdf, local)
 
 ## Completion JSON
 
