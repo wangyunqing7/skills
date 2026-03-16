@@ -2,7 +2,15 @@
 
 这是一组为 Claude Code 创建的自定义 skills，扩展了 AI 的写作、分析和媒体处理能力。
 
-## 📚 Skills 列表
+## 📊 Skills 快速预览
+
+| Skill | 功能 | 触发方式 | 输出 |
+|-------|------|----------|------|
+| **deep-article-writer** | 深度技术文章写作 | "写一篇关于 XX 的文章" | Markdown 文章 |
+| **paper-analysis** | 学术论文深度分析 | "解读论文"、"analyze this paper" | 文章 + HTML 网页 |
+| **video-downloader** | 通用视频下载 | 提供视频链接并要求下载 | MP4 视频 |
+
+## 📚 Skills 详细说明
 
 ### 1. deep-article-writer
 **深度技术/概念文章写作 skill**
@@ -73,9 +81,22 @@ deno            # TypeScript 运行时
 **默认 skills 目录：** `~/.claude/skills/`
 
 **安装方式：**
+
+### 方法 1：复制所有 skills
 ```bash
-# 复制 skill 到 Claude skills 目录
+# 复制所有 skills 到 Claude skills 目录
 cp -r deep-article-writer ~/.claude/skills/
+cp -r paper-analysis ~/.claude/skills/
+cp -r video-downloader ~/.claude/skills/
+```
+
+### 方法 2：从 GitHub 克隆整个仓库
+```bash
+# 克隆到 Claude skills 目录
+git clone https://github.com/wangyunqing7/skills.git ~/.claude/skills-repo
+ln -s ~/.claude/skills-repo/deep-article-writer ~/.claude/skills/
+ln -s ~/.claude/skills-repo/paper-analysis ~/.claude/skills/
+ln -s ~/.claude/skills-repo/video-downloader ~/.claude/skills/
 ```
 
 ---
@@ -101,22 +122,6 @@ skill-name/
 - SKILL.md 保持精简
 - 详细指南放在 references/，按需加载
 - 节省 token，提高效率
-
----
-
-## 🛠️ 创建新 Skill
-
-使用 `skill-creator` skill 来创建新的 skills：
-
-```bash
-python scripts/init_skill.py <skill-name> --path ~/.claude/skills/
-```
-
-编辑 SKILL.md 和 references/ 后，打包：
-
-```bash
-python scripts/package_skill.py ~/.claude/skills/<skill-name>
-```
 
 ---
 
