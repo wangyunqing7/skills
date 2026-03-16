@@ -133,5 +133,6 @@ skill-name/
 
 ## 🔗 相关资源
 
+- **GitHub 仓库**: [wangyunqing7/skills](https://github.com/wangyunqing7/skills)
 - [Claude Code Documentation](https://github.com/anthropics/claude-code)
 - [Skill Creation Guide](https://github.com/anthropics/claude-code/tree/main/docs/skills)
