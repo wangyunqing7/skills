@@ -36,43 +36,20 @@ Step 5: Deliver results
 
 Generate standardized directory name:
 
-**For arXiv papers**:
+**For all papers**:
 ```
-paper_{sanitized_title}_{arxiv_id_no_dots}_{YYYYMMDD}
+{sanitized_title}
 ```
-
-**For non-arXiv papers**:
-```
-paper_{sanitized_title}_{platform}_{YYYYMMDD}
-```
-
-Where `platform` is one of: `openreview`, `pubmed`, `pdf`, `local`, `paper`.
 
 **Base path**: Papers are stored in `~/papers/` (user's home directory).
 
 Full workspace path example:
 ```
-~/papers/paper_attention_is_all_you_need_170603762_20250215/
+~/papers/attention_is_all_you_need/
 ```
 
 
-**Title sanitization**: lowercase → remove special chars (keep `[a-z0-9_-]`) → spaces to underscores → truncate to first 5 words if >50 chars.
-
-```python
-import re
-from datetime import datetime
-
-def make_workspace_name(title, platform="unknown", paper_id=None):
-    t = re.sub(r'[^\w\s-]', '', title.lower()).replace(' ', '_')
-    if len(t) > 50:
-        t = '_'.join(t.split('_')[:5])
-    ts = datetime.now().strftime("%Y%m%d")
-
-    if platform == "arxiv" and paper_id:
-        return f"paper_{t}_{paper_id.replace('.', '')}_{ts}"
-    else:
-        return f"paper_{t}_{platform}_{ts}"
-```
+**Title sanitization**: lowercase → remove special chars (keep `[a-z0-9_-]`) → spaces to underscores.
 
 Create directory structure:
 
